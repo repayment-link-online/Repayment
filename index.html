@@ -5,21 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Repayment Payment Page</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 40px; background-color: #f4f4f9; }
-        .card { background: white; padding: 20px; border-radius: 12px; max-width: 350px; margin: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .pay-btn { display: inline-block; background-color: #28a745; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 15px; }
+        body { font-family: Arial, sans-serif; background-color: #f4f5f7; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; width: 320px; }
+        .pay-btn { display: inline-block; background-color: #28a745; color: white; padding: 12px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; margin-top: 15px; margin-bottom: 20px; width: 80%; }
+        #qrcode img { margin: 0 auto; }
     </style>
 </head>
 <body>
     <div class="card">
         <h2>Pay Repayment</h2>
-        <p><strong>Amount:</strong> ₹5,690</p>
-        <p><strong>Payee:</strong> Abhishek</p>
-        
-        <a class="pay-btn" href="upi://pay?pa=abhishekai37941@nyes&pn=Abhishek&am=5690&cu=INR&tn=Repayment">Pay with Any UPI App</a>
-        
-        <br><br>
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=abhishekai37941@nyes%26pn=Abhishek%26am=5690%26cu=INR%26tn=Repayment" alt="Scan to Pay">
+        <p><strong>Amount:</strong> ₹<span id="display-amount">--</span></p>
+        <p><strong>Payee:</strong> <span id="display-name">--</span></p>
+        <a id="pay-button" href="#" class="pay-btn">Pay with Any UPI App</a>
+        <div id="qrcode"></div>
     </div>
+
+    <!-- QR Code Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        // URL se parameters read karna
+        const urlParams = new URLSearchParams(window.location.search);
+        const upi = urlParams.get('upi') || 'abhishekai37941@nyes';
+        const name = urlParams.get('name') || 'Abhishek';
+        const amount = urlParams.get('amount') || '5690';
+
+        // UI text update karna
+        document.getElementById('display-amount').textContent = amount;
+        document.getElementById('display-name').textContent = name;
+
+        // Dynamic UPI Link banana
+        const upiLink = `upi://pay?pa=${encodeURIComponent(upi)}&pn=${encodeURIComponent(name)}&am=${encodeURIComponent(amount)}&cu=INR`;
+
+        // Button href update karna
+        document.getElementById('pay-button').href = upiLink;
+
+        // Dynamic QR Code generate karna
+        new QRCode(document.getElementById("qrcode"), {
+            text: upiLink,
+            width: 200,
+            height: 200
+        });
+    </script>
 </body>
 </html>
